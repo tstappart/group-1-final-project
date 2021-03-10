@@ -2,6 +2,7 @@ package dai;
 
 import java.util.ArrayList;
 import numberlist.IndexException;
+import numberlist.objectlist.Copiable;
 import numberlist.objectlist.Money;
 import numberlist.objectlist.NumericArrayList;
 import numberlist.primitivelist.IntegerArrayList;
@@ -57,50 +58,113 @@ public class BakedGoods {
     public NumericArrayList getCosts() {
         return costs;
     }
-    
-    // Problems:
-    // UI Guy: "I don't have an array of primitive integers to pass in. I only have an IntegerArrayList"
-    // Robert: "Why do I have to pass in the data. Your BakedGoods instance already has the data"
+
     public void sortByName() {
-        for (int i = 1; i < names.size(); i++) {
-            int position = i;
-            while (position > 0 && (names.get(position - 1).compareTo(names.get(position)) > 0)) {
-                swapNames(names, position, position - 1);
-                position--;
+        try {
+            ArrayList<String> sortedList = new ArrayList<String>();
+            for (int i = 1; i < names.size(); i++) {
+                int position = i;
+                while (position > 0 && (names.get(position - 1).compareTo(names.get(position)) > 0)) {
+                    swapStringArrayList(names, position, position - 1);
+                    swapIntegerArrayList(batches, position, position - 1);
+                    swapNumericArrayList(temps, position, position - 1);
+                    swapIntegerArrayList(durations, position, position - 1);
+                    swapNumericArrayList(costs, position, position - 1);
+                    position--;
+                }
             }
+        } catch (IndexException ex) {
+            System.out.println(ex.getMessage());
         }
     }
 
-    public void swapNames(ArrayList<String> names, int i, int j) {
+    public void sortByBatches() {
+        try {
+            for (int i = 1; i < batches.getCount(); i++) {
+                int position = i;
+                while (position > 0 && (batches.getValue(position - 1) > (batches.getValue(position)))) {
+                    swapStringArrayList(names, position, position - 1);
+                    swapIntegerArrayList(batches, position, position - 1);
+                    swapNumericArrayList(temps, position, position - 1);
+                    swapIntegerArrayList(durations, position, position - 1);
+                    swapNumericArrayList(costs, position, position - 1);
+                    position--;
+                }
+            }
+        } catch (IndexException ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    public void sortByTemps() {
+        try {
+            for (int i = 1; i < temps.getCount(); i++) {
+                int position = i;
+                while (position > 0 && ((Temperature) temps.getValue(position - 1)).compareTo((Temperature) temps.getValue(position)) > 0) {
+                    swapStringArrayList(names, position, position - 1);
+                    swapIntegerArrayList(batches, position, position - 1);
+                    swapNumericArrayList(temps, position, position - 1);
+                    swapIntegerArrayList(durations, position, position - 1);
+                    swapNumericArrayList(costs, position, position - 1);
+                    position--;
+                }
+            }
+        } catch (IndexException ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    public void sortByDuration() {
+        try {
+            for (int i = 1; i < durations.getCount(); i++) {
+                int position = i;
+                while (position > 0 && (durations.getValue(position - 1) > (durations.getValue(position)))) {
+                    swapStringArrayList(names, position, position - 1);
+                    swapIntegerArrayList(batches, position, position - 1);
+                    swapNumericArrayList(temps, position, position - 1);
+                    swapIntegerArrayList(durations, position, position - 1);
+                    swapNumericArrayList(costs, position, position - 1);
+                    position--;
+                }
+            }
+        } catch (IndexException ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    public void sortByCosts() {
+        try {
+            for (int i = 1; i < costs.getCount(); i++) {
+                int position = i;
+                while (position > 0 && ((Money) costs.getValue(position - 1)).compareTo((Money) costs.getValue(position)) > 0) {
+                    swapStringArrayList(names, position, position - 1);
+                    swapIntegerArrayList(batches, position, position - 1);
+                    swapNumericArrayList(temps, position, position - 1);
+                    swapIntegerArrayList(durations, position, position - 1);
+                    swapNumericArrayList(costs, position, position - 1);
+                    position--;
+                }
+            }
+        } catch (IndexException ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    public void swapStringArrayList(ArrayList<String> names, int i, int j) {
         String temp = names.get(i);
         names.set(i, names.get(j));
         names.set(j, (temp));
     }
 
+    public void swapNumericArrayList(NumericArrayList list, int i, int j) throws IndexException {
+        Copiable temp = list.getValue(i);
+        list.set(i, list.getValue(j));
+        list.set(j, (temp));
+    }
+
+    public void swapIntegerArrayList(IntegerArrayList list, int i, int j) throws IndexException {
+        long temp = list.getValue(i);
+        list.set(i, list.getValue(j));
+        list.set(j, (temp));
+    }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

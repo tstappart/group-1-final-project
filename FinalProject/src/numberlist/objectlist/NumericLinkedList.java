@@ -176,7 +176,7 @@ public class NumericLinkedList extends NumericList implements Copiable,
      * @throws numberlist.IndexException
      */
     @Override
-    Copiable set(int index, Copiable obj) throws IndexException {
+    public Copiable set(int index, Copiable obj) throws IndexException {
         if (index < 0 || index >= count) {
             throw new IndexException(-1, -1, index);
         }
