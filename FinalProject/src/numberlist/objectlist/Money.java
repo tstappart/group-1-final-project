@@ -5,13 +5,12 @@ import java.io.Serializable;
 /**
  * This class represents a single monetary value in U.S. dollars and cents.
  *
- * @author Giovanna Chintya Susanto
- * @author Lok Hei Gee
- * @author Jason Christian Limpah
- * @author Feny Graciella Dai
- * @version 3/6/2021
+ * @author Octavia Stappart
+ * @author Kirtiashna Chandra
+ * @date 03/06/2021
+ * @version 1.0
  */
-public final class Money implements Comparable<Money>, Copiable, Serializable {
+public final class Money implements Copiable, Comparable<Money>, Serializable {
 
     //fields
     private long dollars;
@@ -100,50 +99,12 @@ public final class Money implements Comparable<Money>, Copiable, Serializable {
         return new Money(result / 100, (byte) (result % 100));
     }
 
-    /**
-     * This method is supported for the benefit of hash tables such as those
-     * provided by HashMap.
-     *
-     * @return a hash code value for this object
-     */
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 29 * hash + (int) (this.dollars ^ (this.dollars >>> 32));
-        hash = 29 * hash + this.cents;
-        return hash;
+    public Money divide(int divisor) {
+        long value = dollars * 100;
+        value += cents;
+        long result = value / divisor;
+        return new Money(result/ 100, (byte) (result % 100));
     }
-
-    /**
-     * The equals method for class Object implements the most discriminating
-     * possible equivalence relation on objects; that is, for any non-null
-     * reference values x and y, this method returns true if and only if x and y
-     * refer to the same object (x == y has the value true).
-     *
-     * @param obj the reference object with which to compare
-     * @return true if the arguments are equal to each other and false otherwise
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Money other = (Money) obj;
-        if (this.dollars != other.dollars) {
-            return false;
-        }
-        if (this.cents != other.cents) {
-            return false;
-        }
-        return true;
-    }
-
     /**
      * Provides a string representation of the current Money object, in the form
      * $mm.mm. Negative values have a minus sign before the dollar sign. Zero
@@ -155,40 +116,77 @@ public final class Money implements Comparable<Money>, Copiable, Serializable {
      */
     @Override
     public String toString() {
-        String moneyText = Math.abs(dollars) + "."
-                + String.format("%02d", Math.abs(cents));
-        if (dollars >= 0) {
-            return "$" + moneyText;
+
+        String output;
+        if (dollars < 0 || cents < 0) {
+            output = String.format("-$%d.%2d", Math.abs(dollars), Math.abs(cents));
         } else {
-            return "-$" + moneyText;
+            output = String.format("$%d.%02d", dollars, cents);
+        }
+        return output;
+    }
+
+    /**
+     * Tests whether two Money objects are equal. This method determines if two
+     * distinct Money objects have the same contents.
+     *
+     * @param other the object to evaluate
+     * @return true if the objects have identical content, else false
+     */
+    @Override
+    public boolean equals(Object other) {
+        if (other instanceof Money) {
+            return (dollars == ((Money) other).dollars && cents == ((Money) other).cents);
+        } else {
+            return false;
         }
     }
 
     /**
-     * This method is to make a deep copy for Money
+     * This method overrides the hashCode method due to the use of the
+     * overridden Object equals method. This method determines if two equal
+     * objects return the same hash code.
      *
-     * @return copy which is Money's deep copy
+     * @return the hash code
      */
     @Override
-    public Money copy() {
-        Money copy = new Money(getDollars(), getCents());
-        return copy;
+    public int hashCode() {
+        int hash = 7;
+        hash = 17 * hash + (int) (this.dollars ^ (this.dollars >>> 32));
+        hash = 17 * hash + this.cents;
+        return hash;
     }
 
     /**
-     * This method is to compare two different Money objects
+     * Returns a deep copy of a Money object. Implements the copy() method from
+     * the Copiable interface.
      *
-     * @param other the other complex number
-     * @return 0 if both money objects are identical, -1 if this money  is
-     * smaller than the other complex and 1 if this money is larger than the
-     * other complex.
+     * @return a deep copy of the Money object
+     */
+    @Override
+    public Money copy() {
+        Money newMoney = new Money(this.getDollars(), this.getCents());
+        return newMoney;
+    }
+
+    /**
+     * Compares two Money objects. Returns -1 if the object is less than the
+     * other value, 0 if equal, and 1 if greater than.
+     *
+     * @param other
+     * @return -1 if less, 0 if equal, 1 if greater
      */
     @Override
     public int compareTo(Money other) {
-        if (this.dollars - other.dollars == 0) {
-            return (int) (this.cents - other.cents);
+        long value = this.dollars * 100 + this.cents;
+        long oValue = other.dollars * 100 + other.cents;
+        if (value < oValue) {
+            return -1;
+        }
+        if (value == oValue) {
+            return 0;
         } else {
-            return (int) (this.dollars - other.dollars);
+            return 1;
         }
     }
 }

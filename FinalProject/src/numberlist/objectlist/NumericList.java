@@ -4,87 +4,102 @@ import java.io.Serializable;
 import numberlist.IndexException;
 
 /**
- * This class is an abstract class for numeric list
+ * This class represents the List ADT and all its basic methods. It is not
+ * dependent on the list implementation. The methods whose implementation varies
+ * are declared abstract here, and are implemented appropriately in their child
+ * classes.
  *
- * @author Giovanna Chintya Susanto
- * @author Lok Hei Gee
- * @author Jason Christian Limpah
- * @author Feny Graciella Dai
- * @version 3/6/2021
+ * @author Octavia Stappart
+ * @author Kirtiashna Chandra
+ * @date 03/06/2021
+ * @version 1.0
  */
 abstract class NumericList implements Serializable {
 
-    //field
+    //Data fields
     int count;
 
     /**
-     * This is an abstract method for add
+     * Inserts the given object at the end of the list. This method uses dynamic
+     * binding to implement the appropriate add method at run-time according to
+     * the calling variable's actual type.
      *
-     * @param index where we want to save
-     * @param obj the information we want to save
-     * @throws numberlist.IndexException
+     * @param index the index to insert the object at
+     * @param obj the Copiable object to insert
      */
     abstract void add(int index, Copiable obj) throws IndexException;
 
     /**
-     * This method add the obj into the end of the list
+     * Adds the specified object to the list. This method calls the abstract add
+     * method above, which in turn calls the appropriate method at run-time
+     * according to the object's actual type.
      *
-     * @param obj the Object of the information which want to save in
-     * @return return an integer about where the obj save
-     * @throws numberlist.IndexException
+     * @param obj
+     * @return the index the object was placed at
      */
-    public int add(Copiable obj) throws IndexException {
-        add(count, obj);
-        return count - 1;
+    public int add(Copiable obj) {
+        try {
+            add(this.getCount(), obj);
+        } catch (IndexException ex) {
+            System.out.println("IndexException caught");
+        }
+        return (this.getCount() - 1);
     }
 
     /**
-     * This is an abstract method for set
+     * Replaces the value at the specified index with a new specified value.
+     * This method uses dynamic binding to implement the appropriate remove
+     * method at run-time according to the calling variable's actual type.
      *
-     * @param index the index where the value was replaced
-     * @param obj the given value
-     * @return the value that was replaced.
-     * @throws numberlist.IndexException
+     * @param index the index of the object to remove
+     * @param obj the value added
+     * @return the Copiable object removed
      */
     abstract Copiable set(int index, Copiable obj) throws IndexException;
 
     /**
-     * This is an abstract method for remove
+     * Removes the object at the specified index. This method uses dynamic
+     * binding to implement the appropriate remove method at run-time according
+     * to the calling variable's actual type.
      *
-     * @param index the index of where we want to remove
-     * @return return the Object for what we remove
-     * @throws numberlist.IndexException
+     * @param index the index of the object to remove
      */
-    abstract Object remove(int index) throws IndexException;
+    abstract Copiable remove(int index) throws IndexException;
 
     /**
-     * This is an abstract method for remove
+     * Removes the specified object. This method uses dynamic binding to
+     * implement the appropriate remove method at run-time according to the
+     * calling variable's actual type.
      *
-     * @param obj the Object of what we want to remove
+     * @param obj the object to remove
      */
     abstract void remove(Copiable obj);
 
     /**
-     * This is an abstract method for add
+     * Returns the object at the specified index. This method uses dynamic
+     * binding to implement the appropriate getValue method at run-time
+     * according to the calling variable's actual type.
      *
-     * @param index the index for the information we want to find
-     * @return return an Object for what we find
-     * @throws numberlist.IndexException
+     * @param index of the object to return
+     * @return the Copiable object at the index
      */
-    abstract Object getValue(int index) throws IndexException;
+    abstract Copiable getValue(int index) throws IndexException;
 
     /**
-     * This is an abstract method for finding the first index
+     * Finds the first index of the specified object. This method uses dynamic
+     * binding to implement the appropriate findFirstIndex method at run-time
+     * according to the calling variable's actual type.
      *
-     * @param obj the Object we want to find
-     * @return an integer for the first index of what we want to find
+     * @param obj the object to find
+     * @return the index of the object
      */
     abstract int findFirstIndex(Copiable obj);
 
     /**
-     * This method return the count for the list
+     * Returns the number of objects in the array. This method is overridden in
+     * all child classes to avoid recursion (hopefully).
      *
-     * @return an integer for the list count
+     * @return the number of objects in the array
      */
     public int getCount() {
         return count;

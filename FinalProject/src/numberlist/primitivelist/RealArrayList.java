@@ -4,67 +4,74 @@ import java.io.Serializable;
 import numberlist.IndexException;
 
 /**
- * This class provides a growable array for primitive real values.
+ * This class provides a growable array for Double Objects.
  *
- * @author Giovanna Chintya Susanto
- * @author Lok Hei Gee
- * @author Jason Christian Limpah
- * @author Feny Graciella Dai
- * @version 3/6/2021
+ * @author Octavia Stappart
+ * @author Kirtiashna Chandra
+ * @date 03/06/2021
+ * @version 1.0
  */
-public class RealArrayList extends DoubleArrayList implements Serializable {
+class RealArrayList extends DoubleArrayList implements Serializable {
 
     /**
-     * Inserts the given double value at the end of the list and return the
-     * index where the value was inserted at.
+     * Insert the given double value at the end of the list.
      *
      * @param value the value to be stored
-     * @return the index where the value was stored inside the array
+     * @return the index the value was inserted at
      */
     public int add(double value) {
+        int count = super.getCount();
         try {
-            add(getCount(), value);
+            super.add(count, value);
         } catch (IndexException ex) {
-            System.out.println(ex.getMessage());
+            System.out.println("IndexException caught in add of RealArrayList");
         }
-        return getCount() - 1;
+        return count;
     }
 
     /**
-     * Deletes all the instance of the value from the list.
+     * Deletes all instances of the value from the list. Following removal of
+     * each instance of the value, remaining elements in the array are moved so
+     * that there are no empty spaces.
      *
-     * @param value the value to be removed from the list.
+     * @param value the value to be deleted
      */
     public void removeAll(double value) {
-        for (int i = getCount(); i > -1; i--) {
+        for (int i = 0; i < super.getCount(); i++) {
             try {
-                if (getValue(i) == value) {
-                    remove(i);
+                if (super.getValue(i) == value) {
+                    super.remove(i);
+                    i--;
                 }
             } catch (IndexException ex) {
-                System.out.println(ex.getMessage());
+                System.out.println("IndexException caught in removeAll");
             }
         }
     }
 
     /**
-     * Return the last index of the last value in the list that contains the
-     * value, or -1 if the value does not exist.
+     * Returns the index of the last element in the list containing the value.
+     * If the value is not found, this method returns -1.
      *
-     * @param value the value to be found in the list
-     * @return the index of where the last value in the list is found or -1 if
-     * not found.
+     * @param value the value to be stored
+     * @return the index the value was inserted at
      */
-    public int findLastIndex(double value) {
-        for (int i = getCount() - 1; i > -1; i--) {
+    public int findLastIndex(long value) {
+        int lastIndex = this.findFirstIndex(value);
+        int count = this.getCount() - 1;
+        if (lastIndex != -1) {
             try {
-                if (value == getValue(i)) {
-                    return i;
+                while (count >= lastIndex) {
+                    if (this.getValue(count) == value) {
+                        return count;
+                    } else {
+                        count--;
+                    }
                 }
             } catch (IndexException ex) {
-                System.out.println(ex.getMessage());
+                System.out.println("IndexException caught in findLastIndex");
             }
         }
-        return -1;
+        return lastIndex;
     }
 }

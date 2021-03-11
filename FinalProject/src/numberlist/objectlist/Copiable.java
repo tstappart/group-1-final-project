@@ -1,20 +1,23 @@
 package numberlist.objectlist;
 
 /**
- * This class is an interface class which help to make a deep copy
- *
- * @author Giovanna Chintya Susanto
- * @author Lok Hei Gee
- * @author Jason Christian Limpah
- * @author Feny Graciella Dai
- * @version 3/6/2021
+ * This Copiable interface is implemented by other classes. This interface is
+ * designed to be implemented by classes which are capable of having a deep copy
+ * produced of their contents.
+ * 
+ * @author Octavia Stappart
+ * @author Kirtiashna Chandra
+ * @date   03/06/2021
+ * @version 1.0
  */
+
 public interface Copiable {
 
     /**
-     * This method is an interface method
+     * This copy method is implemented within the classes using this interface.
+     * Each method returns a deep copy of the object.
      *
-     * @return return what we want to make a deep copy
+     * @return Copiable, a new deep copy of the object
      */
     Copiable copy();
 

@@ -4,76 +4,98 @@ import java.io.Serializable;
 import numberlist.IndexException;
 
 /**
- * This class provides a growable array for primitive double values.
+ * This class uses composition to create a floating point version of
+ * LongArrayList.
  *
- * @author Giovanna Chintya Susanto
- * @author Lok Hei Gee
- * @author Jason Christian Limpah
- * @author Feny Graciella Dai
- * @version 3/6/2021
+ * @author Octavia Stappart
+ * @author Kirtiashna Chandra
+ * @date 03/06/2021
+ * @version 1.0
  */
-public class DoubleArrayList implements Serializable {
+class DoubleArrayList implements Serializable {
 
-    //field
-    private LongArrayList list;
+    //Data fields
+    LongArrayList list = new LongArrayList();
 
     /**
-     * Constructor. Initializes the underlying array to 10 elements using
-     * composition from LongArrayList class.
+     * Constructor.
      */
     public DoubleArrayList() {
-        this.list = new LongArrayList();
+
     }
 
     /**
-     * Inserts the given double value at the given index.The index is assumed to
-     * be a value between 0 and count. Existing elements are moved up as needed
-     * to make room for the new value.
+     * Inserts the given double value at the given index.
      *
      * @param index the index where the new value should be stored
      * @param value the value to be stored
-     * @throws numberlist.IndexException
      */
     public void add(int index, double value) throws IndexException {
-        list.add(index, Double.doubleToRawLongBits(value));
-
+        try {
+            list.add(index, Double.doubleToRawLongBits(value));
+        } catch (IndexException ex) {
+            throw ex;
+        }
     }
 
     /**
-     * Deletes the value at the given index.The index is assumed to be a value
-     * between 0 and count - 1. Existing elements are moved down as needed to
-     * keep all values contiguous, without any empty spaces in the array.
+     * Replaces the value at the specified index with a new specified value.
+     * Given a specified index and object, this replaces the value with the
+     * specified value and returns the removed value.
+     *
+     * @param index the index of the object to replace
+     * @param value the value added
+     * @return the Copiable object removed
+     * @throws numberlist.IndexException
+     */
+    public double set(int index, double value) throws IndexException {
+        double removedValue = Double.longBitsToDouble(list.set(index, Double.doubleToRawLongBits(value)));
+        return removedValue;
+    }
+
+    /**
+     * Deletes the value at the given index.
      *
      * @param index the index of the element that should be removed
      * @return the value that was removed
-     * @throws numberlist.IndexException
      */
     public double remove(int index) throws IndexException {
-        return Double.longBitsToDouble(list.remove(index));
+        double removedValue;
+        try {
+            removedValue = Double.longBitsToDouble(list.remove(index));
+        } catch (IndexException ex) {
+            throw ex;
+        }
+        return removedValue;
     }
 
     /**
-     * Deletes the first instance of the given value. Existing elements are
-     * moved down as needed to keep all values contiguous, without any empty
-     * spaces in the array. If the value does not exist, this method returns
-     * without doing anything.
+     * Deletes the first instance of the given value.
      *
      * @param value the value to remove
      */
-    public void remove(double value) {
-        list.remove(Double.doubleToRawLongBits(value));
+    public void remove(double value) throws IndexException {
+        try {
+            list.remove(Double.doubleToRawLongBits(value));
+        } catch (IndexException ex) {
+            System.out.println("IndexException caught in DoubleArrayList and Thrown.");
+            throw ex;
+        }
     }
 
     /**
-     * Returns the value at the given index without removing it.The index is
-     * assumed to be a value between 0 and count - 1.
+     * Returns the value at the given index without removing it.
      *
      * @param index the index of the element
      * @return the value at that index
-     * @throws numberlist.IndexException
      */
     public double getValue(int index) throws IndexException {
-        return Double.longBitsToDouble(list.getValue(index));
+        try {
+            double value = Double.longBitsToDouble(list.getValue(index));
+            return value;
+        } catch (IndexException ex) {
+            throw ex;
+        }
     }
 
     /**
@@ -84,7 +106,8 @@ public class DoubleArrayList implements Serializable {
      * @return the index where the value was found, or -1 if not found
      */
     public int findFirstIndex(double value) {
-        return list.findFirstIndex(Double.doubleToRawLongBits(value));
+        int firstIndex = list.findFirstIndex(Double.doubleToRawLongBits(value));
+        return firstIndex;
     }
 
     /**
@@ -93,7 +116,8 @@ public class DoubleArrayList implements Serializable {
      * @return the number of values in the array
      */
     public int getCount() {
-        return list.getCount();
+        int count = list.getCount();
+        return count;
     }
 
     /**
@@ -116,21 +140,8 @@ public class DoubleArrayList implements Serializable {
             }
             output += " ]";
         } catch (IndexException ex) {
-            System.out.println(ex.getMessage());
+            System.out.println("IndexException caught");
         }
         return output;
-    }
-
-    /**
-     * Replaces the value at the given index with the given value.
-     *
-     * @param index the index where the value was replaced
-     * @param value the given value
-     * @return the value that was replaced.
-     * @throws numberlist.IndexException
-     */
-    public double set(int index, double value) throws IndexException {
-        return Double.longBitsToDouble(list.set(index,
-                Double.doubleToRawLongBits(value)));
     }
 }

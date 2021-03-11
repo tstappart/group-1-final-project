@@ -4,68 +4,78 @@ import java.io.Serializable;
 import numberlist.IndexException;
 
 /**
- * This class inherit from LongArrayList, and create three new methods
+ * This class provides a growable array for Integer Objects.
  *
- * @author Giovanna Chintya Susanto
- * @author Lok Hei Gee
- * @author Jason Christian Limpah
- * @author Feny Graciella Dai
- * @version 3/6/2021
+ * @author Octavia Stappart
+ * @author Kirtiashna Chandra
+ * @date 03/06/2021
+ * @version 1.0
  */
 public class IntegerArrayList extends LongArrayList implements Serializable {
 
     /**
-     * Inserts at the end of the list and return the index it was inserted at
+     * Inserts the given long value at the end of the list.
      *
-     * @param value the value want to store in
-     * @return the index of the saving value
+     * @param value the value to be stored
+     * @return the index the value was inserted at
      */
     public int add(long value) {
+        int count = super.getCount();
         try {
-            super.add(super.getCount(), value);
-        } catch (IndexException ie) {
-            //this should never happen
+            super.add(count, value);
+        } catch (IndexException ex) {
+            System.out.println("IndexException caught");
         }
-        return super.getCount() - 1;
+        return count;
     }
 
     /**
-     * Deletes all instances of the value from the list
+     * Deletes all instances of the value from the list. Following removal of
+     * each instance of the value, remaining elements in the array are moved so
+     * that there are no empty spaces.
      *
-     * @param value the value want to remove
+     * This method uses findFirstIndex to establish the presence of the desired
+     * value. If not present, exits and does nothing. If present, uses the
+     * findFirstIndex return condition to continue the while loop.
+     *
+     * @param value the value to be deleted
      */
     public void removeAll(long value) {
-        try {
-            for (int i = getCount() - 1; i >= 0; i--) {
-                if (getValue(i) == value) {
-                    remove(i);
+        for (int i = 0; i < super.getCount(); i++) {
+            try {
+                if ((super.getValue(i)) == value) {
+                    super.remove(i);
+                    i--;
                 }
+            } catch (IndexException ex) {
+                System.out.println("IndexException caught in removeAll");
             }
-        } catch (IndexException ex) {
-            System.out.println(ex.getMessage());
         }
     }
 
     /**
-     * Returns the index of the last element in the list that contains the
-     * value, or -1 if the value does not exist
+     * Returns the index of the last element in the list containing the value.
+     * If the value is not found, this method returns -1.
      *
-     * @param value the value want to find
-     * @return the last index of the finding value
+     * @param value the value to be stored
+     * @return the index the value was inserted at
      */
     public int findLastIndex(long value) {
-        try {
-            int index = -1;
-            for (int i = 0; i < super.getCount(); i++) {
-                if (super.getValue(i) == value) {
-                    index = i;
+        int lastIndex = this.findFirstIndex(value);
+        int count = this.getCount() - 1;
+        if (lastIndex != -1) {
+            try {
+                while (count >= lastIndex) {
+                    if (this.getValue(count) == value) {
+                        return count;
+                    } else {
+                        count--;
+                    }
                 }
+            } catch (IndexException ex) {
+                System.out.println("IndexException caught");
             }
-            return index;
-
-        } catch (IndexException ie) {
-            //This should never happen
         }
-        return -1;
+        return lastIndex;
     }
 }

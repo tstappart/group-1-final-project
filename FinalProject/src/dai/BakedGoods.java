@@ -28,15 +28,11 @@ public class BakedGoods {
     }
 
     public void addGood(String name, int batches, Temperature temp, int duration, Money cost) {
-        try {
-            names.add(name);
-            this.batches.add(batches);
-            temps.add(temp);
-            durations.add(duration);
-            costs.add(cost);
-        } catch (IndexException ex) {
-            System.out.println(ex.getMessage());
-        }
+        names.add(name);
+        this.batches.add(batches);
+        temps.add(temp);
+        durations.add(duration);
+        costs.add(cost);
     }
 
     public ArrayList<String> getNames() {
@@ -167,4 +163,39 @@ public class BakedGoods {
         list.set(i, list.getValue(j));
         list.set(j, (temp));
     }
+
+    public Money totalCost() {
+        Money total = new Money(0, (byte) 0);
+        try {
+            for (int i = 0; i < costs.getCount(); i++) {
+                total = total.add((Money) costs.getValue(i));
+            }
+        } catch (IndexException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return total;
+    }
+
+    public Money calcAveCost() {
+        Money averageCost = this.totalCost().divide(costs.getCount());
+        return averageCost;
+    }
+
+    public Temperature totalTemp() {
+        Temperature total = new Temperature(0, 'F');
+        try {
+            for (int i = 0; i < temps.getCount(); i++) {
+                total = total.add((Temperature) temps.getValue(i));
+            }
+        } catch (IndexException ex) {
+            System.out.println(ex.getMessage());
+        }
+        return total;
+    }
+
+    public Temperature calcAveTemp() {
+        Temperature averageTemp = this.totalTemp().divide(temps.getCount());
+        return averageTemp; 
+    }
+
 }

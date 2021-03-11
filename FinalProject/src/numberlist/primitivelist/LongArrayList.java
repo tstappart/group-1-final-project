@@ -6,11 +6,10 @@ import numberlist.IndexException;
 /**
  * This class provides a growable array for primitive long values.
  *
- * @author Giovanna Chintya Susanto
- * @author Lok Hei Gee
- * @author Jason Christian Limpah
- * @author Feny Graciella Dai
- * @version 3/6/2021
+ * @author Octavia Stappart
+ * @author Kirtiashna Chandra
+ * @date 03/06/2021
+ * @version 1.0
  */
 class LongArrayList implements Serializable {
 
@@ -27,71 +26,87 @@ class LongArrayList implements Serializable {
     }
 
     /**
-     * Inserts the given long value at the given index. Existing elements are
-     * moved up as needed to make room for the new value.
+     * Inserts the given long value at the given index. The index is assumed to
+     * be a value between 0 and count. Existing elements are moved up as needed
+     * to make room for the new value.
      *
      * @param index the index where the new value should be stored
      * @param value the value to be stored
-     * @throws numberlist.IndexException
      */
     public void add(int index, long value) throws IndexException {
         if (index < 0 || index > count) {
             throw new IndexException(0, count, index);
-        } else {
-            if (list[list.length - 1] > 0) {
-                long[] growList = new long[list.length * 2];
-                for (int i = 0; i < list.length; i++) {
-                    growList[i] = list[i];
-                }
-                list = growList;
-            }
-            for (int i = list.length - 1; i >= index; i--) {
-                if (list[i] > 0) {
-                    list[i + 1] = list[i];
-                    list[i] = 0L;
-                }
-            }
-            list[index] = value;
-            count++;
         }
+        long[] newList = new long[list.length];
+        if (count == list.length) {
+            newList = new long[list.length * 2];
+        }
+        for (int i = 0; i <= count; i++) {
+
+            if (i < index) {
+                newList[i] = list[i];
+            }
+            if (i == index) {
+                newList[i] = value;
+            }
+            if (i > index) {
+                newList[i] = list[i - 1];
+            }
+        }
+        list = newList;
+        count++;
     }
 
     /**
-     * Replaces the value at the given index with the given value.
+     * Replaces the value at the specified index with a new specified value.
+     * Given a specified index and object, this replaces the value with the
+     * specified value and returns the removed value.
      *
-     * @param index the index where the value was replaced
-     * @param value the given value
-     * @return the value that was replaced.
+     * @param index the index of the object to replace
+     * @param value the value added
+     * @return the Copiable object removed
      * @throws numberlist.IndexException
      */
     public long set(int index, long value) throws IndexException {
-        if (index > count - 1 || index < 0) {
-            throw new IndexException(-1, -1, index);
+        if (index < 0 || index >= count) {
+            if (count == 0) {
+                throw new IndexException(-1, -1, index);
+            }
+            throw new IndexException(0, (count - 1), index);
         }
-        long replace = list[index];
+        long replaced = list[index];
         list[index] = value;
-        return replace;
+        return replaced;
     }
 
     /**
-     * Deletes the value at the given index. Existing elements are moved down as
-     * needed to keep all values contiguous, without any empty spaces in the
-     * array.
+     * Deletes the value at the given index. The index is assumed to be a value
+     * between 0 and count - 1. Existing elements are moved down as needed to
+     * keep all values contiguous, without any empty spaces in the array.
      *
      * @param index the index of the element that should be removed
      * @return the value that was removed
-     * @throws numberlist.IndexException
      */
     public long remove(int index) throws IndexException {
         if (index < 0 || index >= count) {
-            throw new IndexException(0, count - 1, index);
+            if (count == 0) {
+                throw new IndexException(-1, -1, index);
+            }
+            throw new IndexException(0, (count - 1), index);
         }
-        long removed = list[index];
-        for (int i = index; i < list.length - 1; i++) {
-            list[i] = list[i + 1];
+        long[] newList = new long[(list.length - 1)];
+        long removedValue = list[index];
+        for (int i = 0; i < (count - 1); i++) {
+            if (i < index) {
+                newList[i] = list[i];
+            }
+            if (i >= index) {
+                newList[i] = list[i + 1];
+            }
         }
+        list = newList;
         count--;
-        return removed;
+        return removedValue;
     }
 
     /**
@@ -102,30 +117,37 @@ class LongArrayList implements Serializable {
      *
      * @param value the value to remove
      */
-    public void remove(long value) {
-        int index = findFirstIndex(value);
-        try {
-            if (index != -1) {
-                remove(index);
+    public void remove(long value) throws IndexException {
+        boolean found = false;
+        for (int i = 0; i < count; i++) {
+            if (list[i] == value && found == false) {
+                try {
+                    remove(i);
+                    found = true;
+                } catch (IndexException ex) {
+                    System.out.println("IndexException caught");
+                    throw ex;
+                }
             }
-        } catch (IndexException ex) {
-            System.out.println(ex.getMessage());
         }
     }
 
     /**
-     * Returns the value at the given index without removing it.
+     * Returns the value at the given index without removing it. The index is
+     * assumed to be a value between 0 and count - 1.
      *
      * @param index the index of the element
      * @return the value at that index
-     * @throws numberlist.IndexException
      */
     public long getValue(int index) throws IndexException {
         if (index < 0 || index >= count) {
-            throw new IndexException(0, count - 1, index);
-        } else {
-            return list[index];
+            if (count == 0) {
+                throw new IndexException(-1, -1, index);
+            }
+            throw new IndexException(0, (count - 1), index);
         }
+        long value = list[index];
+        return value;
     }
 
     /**
@@ -136,12 +158,15 @@ class LongArrayList implements Serializable {
      * @return the index where the value was found, or -1 if not found
      */
     public int findFirstIndex(long value) {
+        int index = -1;
+        boolean found = false;
         for (int i = 0; i < count; i++) {
-            if (value == list[i]) {
-                return i;
+            if (list[i] == value && found == false) {
+                index = i;
+                found = true;
             }
         }
-        return -1;
+        return index;
     }
 
     /**
@@ -173,5 +198,4 @@ class LongArrayList implements Serializable {
         output += " ]";
         return output;
     }
-
 }
