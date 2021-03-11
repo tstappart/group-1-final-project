@@ -89,6 +89,14 @@ public class Temperature implements Copiable, Comparable<Temperature>, Serializa
         return added;
     }
 
+     /**
+     * Divides the value field of a Temperature object by an integer. Retains
+     * the unit scale of the object.
+     *
+     * @param divisor value to divide Temperature value by 
+     * @return the Temperature object with new quotient value
+     * scale
+     */ 
     public Temperature divide(int divisor) {
         double result = value / divisor;
         return new Temperature(result, unit);
